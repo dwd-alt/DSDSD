@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Голосовой Мессенджер - Звонки</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Экран входа -->
+        <div class="login-screen" id="loginScreen">
+            <div class="login-card">
+                <h1>📞 Голосовой Мессенджер</h1>
+                <input type="text" id="username" placeholder="Введите ваше имя" maxlength="30">
+
+                <div class="rooms-section">
+                    <h3>Доступные комнаты</h3>
+                    <div id="roomsList" class="rooms-list">
+                        <div class="loading">Загрузка комнат...</div>
+                    </div>
+
+                    <button class="create-room-btn" onclick="showCreateRoomModal()">
+                        ➕ Создать новую комнату
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Модальное окно создания комнаты -->
+        <div id="createRoomModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeCreateRoomModal()">&times;</span>
+                <h2>Создать новую комнату</h2>
+                <input type="text" id="newRoomName" placeholder="Название комнаты" maxlength="50">
+                <div class="checkbox-label">
+                    <input type="checkbox" id="isPrivateRoom">
+                    <label for="isPrivateRoom">Приватная комната</label>
+                </div>
+                <div id="passwordField" style="display: none;">
+                    <input type="password" id="roomPassword" placeholder="Пароль комнаты">
+                </div>
+                <button onclick="createNewRoom()">Создать</button>
+            </div>
+        </div>
+
+        <!-- Экран чата -->
+        <div class="chat-screen" id="chatScreen" style="display: none;">
+            <div class="chat-header">
+                <div class="room-info">
+                    <span>Комната: </span>
+                    <strong id="currentRoom">general</strong>
+                    <button class="change-room-btn" onclick="showRoomSelector()">🔄 Сменить</button>
+                </div>
+                <div class="call-controls-header">
+                    <button class="video-call-btn" onclick="startVideoCall()" id="videoCallBtn" style="display: none;">
+                        📹 Видеозвонок
+                    </button>
+                </div>
+                <button class="logout-btn" onclick="logout()">🚪 Выйти</button>
+            </div>
+
+            <div class="main-content">
+                <!-- Список пользователей -->
+                <div class="users-sidebar">
+                    <h3>Участники (<span id="usersCount">0</span>)</h3>
+                    <div id="usersList" class="users-list">
+                        <!-- Список пользователей будет здесь -->
+                    </div>
+                </div>
+
+                <!-- Область сообщений -->
+                <div class="chat-area">
+                    <div class="messages-container" id="messagesContainer">
+                        <div class="messages" id="messages"></div>
+                    </div>
+
+                    <div class="input-area">
+                        <div class="text-controls">
+                            <input type="text" id="messageInput" placeholder="Введите сообщение..." onkeypress="handleKeyPress(event)">
+                            <button onclick="sendTextMessage()">📤</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Модальное окно звонка -->
+        <div id="callModal" class="call-modal" style="display: none;">
+            <div class="call-container">
+                <div class="call-header">
+                    <h3 id="callStatusText">Входящий звонок...</h3>
+                    <button class="close-call" onclick="endCurrentCall()">✕</button>
+                </div>
+                <div class="video-container">
+                    <video id="localVideo" autoplay muted playsinline></video>
+                    <video id="remoteVideo" autoplay playsinline></video>
+                </div>
+                <div class="call-controls">
+                    <button id="toggleMicBtn" class="call-control-btn" onclick="toggleMicrophone()">
+                        🎤 Выкл
+                    </button>
+                    <button id="toggleVideoBtn" class="call-control-btn" onclick="toggleVideo()" style="display: none;">
+                        📹 Выкл
+                    </button>
+                    <button class="call-control-btn end-call-btn" onclick="endCurrentCall()">
+                        📞 Завершить
+                    </button>
+                </div>
+                <div id="incomingCallControls" style="display: none;">
+                    <button class="accept-call-btn" onclick="acceptCall()">Принять</button>
+                    <button class="reject-call-btn" onclick="rejectCall()">Отклонить</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Селектор комнат -->
+        <div id="roomSelectorModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeRoomSelector()">&times;</span>
+                <h2>Выберите комнату</h2>
+                <div id="roomSelectorList" class="rooms-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="/static/app.js"></script>
+</body>
+</html>
